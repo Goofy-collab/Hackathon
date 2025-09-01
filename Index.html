@@ -1,0 +1,708 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EduBridge Africa - Bridging Educational Gaps Across Africa</title>
+    <meta name="description" content="Transforming education across Africa with AI-powered learning, local content, and community support">
+    
+    <!-- Firebase CDN scripts -->
+    <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-firestore-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-analytics-compat.js"></script>
+    <script>
+        
+        // Firebase configuration
+        const firebaseConfig = {
+            apiKey: "AIzaSyDmV5M9IvedoODV1rWE6WZy6d-icOXcWGQ",
+            authDomain: "edu-bridge-ai.firebaseapp.com",
+            databaseURL: "https://edu-bridge-ai-default-rtdb.firebaseio.com",
+            projectId: "edu-bridge-ai",
+            storageBucket: "edu-bridge-ai.firebasestorage.app",
+            messagingSenderId: "632925487014",
+            appId: "1:632925487014:web:64816784c57e693ba21967",
+            measurementId: "G-8DWD84TJ4L"
+        };
+
+        // Initialize Firebase
+        const app = firebase.initializeApp(firebaseConfig);
+        const auth = firebase.auth();
+        const db = firebase.firestore();
+        const analytics = firebase.analytics();
+        const rtdb = firebase.database();
+
+        // Authentication state observer
+        auth.onAuthStateChanged((user) => {
+            if (user) {
+                console.log("User signed in:", user.email);
+                showUserProfile(user);
+                loadUserData(user.uid);
+            } else {
+                console.log("User signed out");
+                showAuthButtons();
+            }
+        });
+    </script>
+
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.js"></script>
+    
+    <!-- External CSS -->
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <!-- Header -->
+    <header id="header" class="header">
+        <nav class="nav">
+            <div class="a">
+                <span class="logo-icon">🌍</span>
+                EduBridge Africa
+            </div>
+            
+            <ul id="navLinks" class="nav-links">
+                <li><a href="#" class="nav-link active" data-section="dashboard">Home</a></li>
+                <li><a href="#" class="nav-link" data-section="learning">Learning</a></li>
+                <li><a href="#" class="nav-link" data-section="community">Community</a></li>
+                <li><a href="#" class="nav-link" data-section="teachers">Teachers</a></li>
+                <li><a href="#" class="nav-link" data-section="careers">Careers</a></li>
+                <li><a href="#" class="nav-link" data-section="pricing">Pricing</a></li>
+            </ul>
+            
+            <div class="nav-toggle" id="navToggle">
+                <span></span>
+                <span></span>
+                <span></span>
+            </div>
+            
+            <div class="user-actions">
+                <button id="loginBtn" class="btn btn-outline">Login</button>
+                <button id="signupBtn" class="btn btn-primary">Sign Up</button>
+                
+                <div id="userProfile" class="user-profile hidden">
+                    <img src="https://via.placeholder.com/40x40/667eea/ffffff?text=U" alt="Profile" class="profile-img">
+                    <span id="username">User</span>
+                    <span id="subscriptionBadge" class="subscription-badge hidden">Premium</span>
+                    <div class="dropdown">
+                        <button class="btn btn-outline btn-sm" data-section="pricing">Upgrade</button>
+                        <button class="btn btn-outline btn-sm" id="logoutBtn">Logout</button>
+                    </div>
+                </div>
+            </div>
+        </nav>
+    </header>
+
+    <!-- Hero Section -->
+    <section id="heroSection" class="hero">
+        <div class="container">
+            <div class="hero-content">
+                <h1 class="hero-title">Bridging Educational Gaps Across Africa</h1>
+                <p class="hero-description">
+                    Empowering millions with AI-powered learning, local content in native languages, 
+                    and community-driven education that works even offline.
+                </p>
+                
+                <div class="hero-actions">
+                    <button class="btn btn-primary btn-large" id="startLearningBtn">
+                        Start Learning Journey
+                    </button>
+                    <button class="btn btn-outline btn-large" id="exploreFeaturesBtn">
+                        Explore Features
+                    </button>
+                </div>
+                
+                <div class="hero-stats">
+                    <div class="stat">
+                        <span id="studentCount" class="stat-number">24,582</span>
+                        <span class="stat-label">Active Students</span>
+                    </div>
+                    <div class="stat">
+                        <span id="teacherCount" class="stat-number">1,247</span>
+                        <span class="stat-label">Teachers</span>
+                    </div>
+                    <div class="stat">
+                        <span id="certCount" class="stat-number">8,934</span>
+                        <span class="stat-label">Certificates Issued</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Dashboard Section -->
+    <section id="dashboardSection" class="section">
+        <div class="container">
+            <div class="section-header">
+                <h2 class="section-title">Transform Education, Transform Africa</h2>
+                <p class="section-description">
+                    Discover our innovative features designed specifically for African learners and educators
+                </p>
+            </div>
+            
+            <div class="features-grid">
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i data-lucide="brain"></i>
+                    </div>
+                    <h3 class="feature-title">AI-Powered Learning</h3>
+                    <p class="feature-description">
+                        Personalized learning paths adapted to your pace, learning style, and local context using advanced AI.
+                    </p>
+                    <button class="btn btn-primary" data-action="personalize">Create My Path</button>
+                </div>
+                
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i data-lucide="globe"></i>
+                    </div>
+                    <h3 class="feature-title">Local Language Support</h3>
+                    <p class="feature-description">
+                        Learn in your native language with content adapted to local contexts and cultural nuances.
+                    </p>
+                    <button class="btn btn-primary" data-action="languages">Explore Languages</button>
+                </div>
+                
+                <div class="feature-card premium">
+                    <div class="premium-badge">Premium</div>
+                    <div class="feature-icon">
+                        <i data-lucide="wifi-off"></i>
+                    </div>
+                    <h3 class="feature-title">Offline-First Learning</h3>
+                    <p class="feature-description">
+                        Download content and continue learning even without internet connection. Perfect for rural areas.
+                    </p>
+                    <button class="btn btn-primary" data-action="offline">Setup Offline Learning</button>
+                    <div class="premium-overlay">
+                        <h4>Premium Feature</h4>
+                        <p>Upgrade to access offline learning capabilities</p>
+                        <button class="btn btn-outline" data-section="pricing">Upgrade Now</button>
+                    </div>
+                </div>
+                
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i data-lucide="users"></i>
+                    </div>
+                    <h3 class="feature-title">Community Learning</h3>
+                    <p class="feature-description">
+                        Join study groups, peer mentoring, and collaborative projects with learners across Africa.
+                    </p>
+                    <button class="btn btn-primary" data-section="community">Join Community</button>
+                </div>
+                
+                <div class="feature-card premium">
+                    <div class="premium-badge">Premium</div>
+                    <div class="feature-icon">
+                        <i data-lucide="briefcase"></i>
+                    </div>
+                    <h3 class="feature-title">Career Pathways</h3>
+                    <p class="feature-description">
+                        Skills-based training aligned with African job markets and entrepreneurship opportunities.
+                    </p>
+                    <button class="btn btn-primary" data-action="career">Start Assessment</button>
+                    <div class="premium-overlay">
+                        <h4>Premium Feature</h4>
+                        <p>Upgrade to access career guidance and market insights</p>
+                        <button class="btn btn-outline" data-section="pricing">Upgrade Now</button>
+                    </div>
+                </div>
+                
+                <div class="feature-card premium">
+                    <div class="premium-badge">Premium</div>
+                    <div class="feature-icon">
+                        <i data-lucide="award"></i>
+                    </div>
+                    <h3 class="feature-title">Recognized Certifications</h3>
+                    <p class="feature-description">
+                        Earn certificates recognized by employers and institutions across Africa and beyond.
+                    </p>
+                    <button class="btn btn-primary" data-action="certifications">View Certifications</button>
+                    <div class="premium-overlay">
+                        <h4>Premium Feature</h4>
+                        <p>Upgrade to earn recognized certificates</p>
+                        <button class="btn btn-outline" data-section="pricing">Upgrade Now</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Learning Section -->
+    <section id="learningSection" class="section hidden">
+        <div class="container">
+            <div class="section-header">
+                <h2 class="section-title">Your Learning Journey</h2>
+                <p class="section-description">Continue your personalized learning paths</p>
+            </div>
+            
+            <div id="learningPaths">
+                <!-- Learning paths will be populated by JavaScript -->
+            </div>
+        </div>
+    </section>
+
+    <!-- Community Section -->
+    <section id="communitySection" class="section hidden">
+        <div class="container">
+            <div class="section-header">
+                <h2 class="section-title">Learning Community</h2>
+                <p class="section-description">Connect with learners and study together</p>
+            </div>
+            
+            <div id="studyGroups">
+                <!-- Study groups will be populated by JavaScript -->
+            </div>
+        </div>
+    </section>
+
+    <!-- Teachers Section -->
+    <section id="teachersSection" class="section hidden">
+        <div class="container">
+            <div class="section-header">
+                <h2 class="section-title">Teacher Dashboard</h2>
+                <p class="section-description">Manage your classes and track student progress</p>
+            </div>
+            
+            <div id="teacherContent">
+                <div class="upgrade-prompt">
+                    <div class="upgrade-card">
+                        <h3>Unlock Teacher Features</h3>
+                        <p>Access student management, content creation tools, and advanced analytics with our Teacher Plan.</p>
+                        <button class="btn btn-primary" data-section="pricing">Upgrade to Teacher Plan</button>
+                    </div>
+                </div>
+                
+                <div id="teacherDashboard" class="hidden">
+                    <div class="features-grid">
+                        <div class="feature-card">
+                            <h3 class="feature-title">Student Progress Overview</h3>
+                            <div id="progressOverview">
+                                <!-- Progress stats will be populated by JavaScript -->
+                            </div>
+                        </div>
+                        
+                        <div class="feature-card">
+                            <h3 class="feature-title">Curriculum Updates</h3>
+                            <div id="curriculumUpdates">
+                                <!-- Updates will be populated by JavaScript -->
+                            </div>
+                        </div>
+                        
+                        <div class="feature-card">
+                            <div class="feature-icon">
+                                <i data-lucide="edit"></i>
+                            </div>
+                            <h3 class="feature-title">Content Creator</h3>
+                            <p class="feature-description">
+                                Create and customize educational content for your students with our AI-powered tools.
+                            </p>
+                            <button class="btn btn-primary" data-action="content-creator">Create Content</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Careers Section -->
+    <section id="careersSection" class="section hidden">
+        <div class="container">
+            <div class="section-header">
+                <h2 class="section-title">Career Opportunities</h2>
+                <p class="section-description">Explore in-demand skills and career paths in Africa</p>
+            </div>
+            
+            <div id="marketInsights">
+                <!-- Market insights will be populated by JavaScript -->
+            </div>
+        </div>
+    </section>
+
+    <!-- Pricing Section -->
+    <section id="pricingSection" class="section hidden">
+        <div class="container">
+            <div class="section-header">
+                <h2 class="section-title">Choose Your Plan</h2>
+                <p class="section-description">
+                    Unlock unlimited access to all features with our affordable subscription plans
+                </p>
+            </div>
+            
+            <div class="payment-container">
+                <div class="subscription-cards">
+                    <!-- Student Plan -->
+                    <div class="subscription-card" data-plan="student">
+                        <div class="subscription-type">Student Plan</div>
+                        <div class="subscription-price">$2</div>
+                        <div class="subscription-period">per month</div>
+                        
+                        <ul class="subscription-features">
+                            <li>Access to all learning paths</li>
+                            <li>AI-powered personalization</li>
+                            <li>Community study groups</li>
+                            <li>Progress tracking</li>
+                            <li>Basic support</li>
+                            <li>Mobile app access</li>
+                        </ul>
+                        
+                        <button class="btn btn-primary btn-full" data-plan="student" data-price="2">
+                            Choose Student Plan
+                        </button>
+                    </div>
+                    
+                    <!-- Teacher Plan -->
+                    <div class="subscription-card popular" data-plan="teacher">
+                        <div class="subscription-type">Teacher Plan</div>
+                        <div class="subscription-price">$5</div>
+                        <div class="subscription-period">per month</div>
+                        
+                        <ul class="subscription-features">
+                            <li>Everything in Student Plan</li>
+                            <li>Student management dashboard</li>
+                            <li>Content creation tools</li>
+                            <li>Advanced analytics</li>
+                            <li>Custom curriculum builder</li>
+                            <li>Offline content download</li>
+                            <li>Premium support</li>
+                            <li>Bulk student enrollment</li>
+                            <li>Recognized certifications</li>
+                        </ul>
+                        
+                        <button class="btn btn-primary btn-full" data-plan="teacher" data-price="5">
+                            Choose Teacher Plan
+                        </button>
+                    </div>
+                </div>
+                
+                <div class="security-badges">
+                    <div class="security-badge">
+                        <i data-lucide="shield-check"></i>
+                        SSL Secured
+                    </div>
+                    <div class="security-badge">
+                        <i data-lucide="lock"></i>
+                        256-bit Encryption
+                    </div>
+                    <div class="security-badge">
+                        <i data-lucide="credit-card"></i>
+                        PCI Compliant
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Login Modal -->
+    <div id="loginModal" class="modal hidden">
+        <div class="modal-content">
+            <button class="close-btn" data-modal="loginModal">&times;</button>
+            <div class="modal-header">
+                <h2 class="modal-title">Welcome Back</h2>
+                <p class="modal-subtitle">Sign in to continue your learning journey</p>
+            </div>
+            
+            <form id="loginForm">
+                <div class="form-group">
+                    <label class="form-label" for="loginEmail">Email</label>
+                    <input type="email" id="loginEmail" name="loginEmail" class="form-input" required>
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label" for="loginPassword">Password</label>
+                    <input type="password" id="loginPassword" name="loginPassword" class="form-input" required>
+                </div>
+                
+                <button type="submit" class="btn btn-primary btn-full">Sign In</button>
+            </form>
+            
+            <p style="text-align: center; margin-top: 20px; color: #718096;">
+                Don't have an account? 
+                <a href="#" id="switchToSignup" style="color: #667eea; font-weight: 600;">Sign up here</a>
+            </p>
+        </div>
+    </div>
+
+    <!-- Signup Modal -->
+    <div id="signupModal" class="modal hidden">
+        <div class="modal-content">
+            <button class="close-btn" data-modal="signupModal">&times;</button>
+            <div class="modal-header">
+                <h2 class="modal-title">Join EduBridge Africa</h2>
+                <p class="modal-subtitle">Start your educational transformation today</p>
+            </div>
+            
+            <form id="signupForm">
+                <div class="form-group">
+                    <label class="form-label" for="signupName">Full Name</label>
+                    <input type="text" id="signupName" name="signupName" class="form-input" required>
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label" for="signupEmail">Email</label>
+                    <input type="email" id="signupEmail" name="signupEmail" class="form-input" required>
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label" for="signupPassword">Password</label>
+                    <input type="password" id="signupPassword" name="signupPassword" class="form-input" required>
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label" for="signupCountry">Country</label>
+                    <select id="signupCountry" name="signupCountry" class="form-select" required>
+                        <option value="">Select your country</option>
+                        <option value="Nigeria">Nigeria</option>
+                        <option value="Kenya">Kenya</option>
+                        <option value="Ghana">Ghana</option>
+                        <option value="South Africa">South Africa</option>
+                        <option value="Uganda">Uganda</option>
+                        <option value="Tanzania">Tanzania</option>
+                        <option value="Rwanda">Rwanda</option>
+                        <option value="Ethiopia">Ethiopia</option>
+                        <option value="Other">Other</option>
+                    </select>
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label" for="userType">I am a</label>
+                    <select id="userType" name="userType" class="form-select" required>
+                        <option value="">Select type</option>
+                        <option value="student">Student</option>
+                        <option value="teacher">Teacher</option>
+                        <option value="parent">Parent</option>
+                        <option value="professional">Working Professional</option>
+                    </select>
+                </div>
+                
+                <button type="submit" class="btn btn-primary btn-full">Create Account</button>
+            </form>
+            
+            <p style="text-align: center; margin-top: 20px; color: #718096;">
+                Already have an account? 
+                <a href="#" id="switchToLogin" style="color: #667eea; font-weight: 600;">Sign in here</a>
+            </p>
+        </div>
+    </div>
+
+    <!-- Personalization Modal -->
+    <div id="personalizationModal" class="modal hidden">
+        <div class="modal-content">
+            <button class="close-btn" data-modal="personalizationModal">&times;</button>
+            <div class="modal-header">
+                <h2 class="modal-title">Create Your Learning Path</h2>
+                <p class="modal-subtitle">Let AI personalize your educational journey</p>
+            </div>
+            
+            <form id="personalizationForm">
+                <div class="form-group">
+                    <label class="form-label" for="subjectInterest">Primary Subject Interest</label>
+                    <select id="subjectInterest" name="subjectInterest" class="form-select" required>
+                        <option value="">Select a subject</option>
+                        <option value="mathematics">Mathematics</option>
+                        <option value="programming">Programming & Technology</option>
+                        <option value="business">Business & Entrepreneurship</option>
+                        <option value="science">Sciences</option>
+                        <option value="agriculture">Agriculture</option>
+                        <option value="languages">Languages</option>
+                    </select>
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label" for="currentLevel">Current Level</label>
+                    <select id="currentLevel" name="currentLevel" class="form-select" required>
+                        <option value="">Select level</option>
+                        <option value="beginner">Beginner</option>
+                        <option value="intermediate">Intermediate</option>
+                        <option value="advanced">Advanced</option>
+                    </select>
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label" for="learningStyle">Preferred Learning Style</label>
+                    <select id="learningStyle" name="learningStyle" class="form-select" required>
+                        <option value="">Select style</option>
+                        <option value="visual">Visual (diagrams, videos)</option>
+                        <option value="auditory">Auditory (lectures, discussions)</option>
+                        <option value="kinesthetic">Hands-on (practice, experiments)</option>
+                        <option value="reading">Reading & writing</option>
+                    </select>
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label" for="connectivity">Internet Connectivity</label>
+                    <select id="connectivity" name="connectivity" class="form-select" required>
+                        <option value="">Select connectivity</option>
+                        <option value="high">High-speed internet available</option>
+                        <option value="moderate">Moderate/intermittent connection</option>
+                        <option value="low">Limited connectivity</option>
+                        <option value="offline">Mostly offline</option>
+                    </select>
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label" for="learningGoals">Learning Goals</label>
+                    <select id="learningGoals" name="learningGoals" class="form-select" required>
+                        <option value="">Select primary goal</option>
+                        <option value="certification">Get certified</option>
+                        <option value="career">Career advancement</option>
+                        <option value="skills">Develop new skills</option>
+                        <option value="business">Start a business</option>
+                        <option value="academic">Academic improvement</option>
+                    </select>
+                </div>
+                
+                <button type="submit" class="btn btn-primary btn-full">Generate My Learning Path</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Payment Modal -->
+    <div id="paymentModal" class="modal hidden">
+        <div class="modal-content">
+            <button class="close-btn" data-modal="paymentModal">&times;</button>
+            <div class="modal-header">
+                <h2 class="modal-title" id="paymentModalTitle">Complete Your Subscription</h2>
+                <p class="modal-subtitle">Secure payment powered by IntaSend</p>
+            </div>
+            
+            <div class="payment-summary">
+                <div class="summary-row">
+                    <span id="planName">Student Plan</span>
+                    <span id="planPrice">$2.00</span>
+                </div>
+                <div class="summary-row">
+                    <span>Processing Fee</span>
+                    <span>$0.00</span>
+                </div>
+                <div class="summary-total">
+                    <span>Total</span>
+                    <span id="totalAmount">$2.00</span>
+                </div>
+            </div>
+            
+            <form id="paymentForm" class="payment-form">
+                <div class="form-group">
+                    <label class="form-label" for="customerName">Full Name</label>
+                    <input type="text" id="customerName" name="customerName" class="form-input" required>
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label" for="customerEmail">Email Address</label>
+                    <input type="email" id="customerEmail" name="customerEmail" class="form-input" required>
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label" for="customerPhone">Phone Number</label>
+                    <input type="tel" id="customerPhone" name="customerPhone" class="form-input" placeholder="+254..." required>
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label" for="paymentMethod">Payment Method</label>
+                    <select id="paymentMethod" name="paymentMethod" class="form-select" required>
+                        <option value="">Select payment method</option>
+                        <option value="MPESA">M-Pesa</option>
+                        <option value="AIRTEL-MONEY">Airtel Money</option>
+                        <option value="CARD-PAYMENT">Credit/Debit Card</option>
+                        <option value="BANK-TRANSFER">Bank Transfer</option>
+                    </select>
+                </div>
+                
+                <button type="submit" class="btn btn-primary btn-full" id="paymentSubmitBtn">
+                    <i data-lucide="credit-card"></i>
+                    Pay Now - <span id="payButtonAmount">$2.00</span>
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Success Modal -->
+    <div id="successModal" class="modal hidden">
+        <div class="modal-content" style="text-align: center;">
+            <button class="close-btn" data-modal="successModal">&times;</button>
+            <div style="margin-bottom: 20px;">
+                <div style="width: 80px; height: 80px; background: #48bb78; border-radius: 50%; margin: 0 auto 20px; display: flex; align-items: center; justify-content: center;">
+                    <i data-lucide="check" style="color: white; width: 40px; height: 40px;"></i>
+                </div>
+                <h2 style="color: #2d3748; margin-bottom: 10px;">Payment Successful!</h2>
+                <p style="color: #718096;">Welcome to EduBridge Africa Premium</p>
+            </div>
+            
+            <div style="background: #f8f9fa; padding: 20px; border-radius: 10px; margin-bottom: 20px;">
+                <p><strong>Subscription:</strong> <span id="successPlanName">Student Plan</span></p>
+                <p><strong>Amount:</strong> <span id="successAmount">$2.00</span></p>
+                <p><strong>Status:</strong> <span style="color: #48bb78;">Active</span></p>
+            </div>
+            
+            <button class="btn btn-primary btn-full" id="startLearningNowBtn">
+                Start Learning Now
+            </button>
+        </div>
+    </div>
+
+    <!-- AI Chatbot -->
+    <button id="chatbotToggle" class="chatbot-toggle">
+        <span id="chatbotNotification" class="chatbot-notification hidden">1</span>
+        <i data-lucide="message-circle"></i>
+    </button> 
+
+    <div id="chatbotContainer" class="chatbot-container">
+        <div class="chatbot-header">
+            <div class="chatbot-title">
+                <span class="chatbot-avatar">🤖</span>
+                EduBridge AI Assistant
+            </div>
+            <button class="chatbot-minimize" id="chatbotMinimize">−</button>
+        </div>
+        
+        <div id="chatbotMessages" class="chatbot-messages">
+            <div class="message bot-message">
+                <div class="message-content">
+                    Hello! I'm your EduBridge AI assistant. I'm here to help you with learning recommendations, career guidance, and any questions about education in Africa. How can I assist you today?
+                </div>
+                <div class="message-time">Now</div>
+            </div>
+        </div>
+        
+        <div id="chatbotTyping" class="chatbot-typing hidden">
+            <div class="typing-indicator">
+                <span></span>
+                <span></span>
+                <span></span>
+            </div>
+            EduBridge AI is typing...
+        </div>
+        
+        <div class="chatbot-input-container">
+            <input 
+                type="text" 
+                id="chatbotInput" 
+                placeholder="Ask me anything about learning..."
+                autocomplete="off"
+            >
+            <button id="chatbotSend">
+                <i data-lucide="send"></i>
+            </button>
+        </div>
+    </div> 
+
+    <!-- Notification System -->
+    <div id="notification" class="notification hidden">
+        <span id="notificationText"></span>
+        <button id="closeNotification" style="background: none; border: none; color: white; margin-left: 10px; cursor: pointer;">&times;</button>
+    </div>
+
+    <!-- Loading Overlay -->
+    <div id="loadingOverlay" class="loading-overlay hidden">
+        <div class="loading-spinner"></div>
+        <div class="loading-text">Processing...</div>
+    </div>
+
+    <!-- Offline Indicator -->
+    <div id="offlineIndicator" class="offline-indicator hidden">
+        📡 You're offline - Limited features available
+    </div>
+
+   <script src="script.js"></script>
+
+</body>
+</html>
