@@ -49,7 +49,7 @@ EduBridge Africa is a web application designed to empower learners, teachers, an
 
 ### 1. Clone the repository
 ```bash
-git clone https://github.com/your-username/edu-bridge-africa.git
+https://github.com/Goofy-collab/Hackathon.git
 cd edu-bridge-africa
 ````
 
