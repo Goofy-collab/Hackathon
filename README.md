@@ -1,6 +1,3 @@
-Perfect — a **README.md** will make your project look professional and explain its purpose. Here’s a polished draft you can put in your repository:
-
-```markdown
 # 🌍 EduBridge Africa
 
 **Bridging Educational Gaps Across Africa with AI-powered learning, localized content, and community-driven education.**
@@ -42,7 +39,6 @@ EduBridge Africa is a web application designed to empower learners, teachers, an
 ├── index.html        # Main entry point
 ├── style.css         # Stylesheet
 ├── script.js         # (Optional) Custom JavaScript functions
-├── assets/           # Images, icons, or other resources
 └── README.md         # Project documentation
 
 ````
@@ -80,13 +76,6 @@ Simply open `index.html` in your browser.
 👉 Your app will be live at:
 `https://your-username.github.io/edu-bridge-africa/`
 
----
-
-## 📸 Preview
-
-*Add a screenshot or demo gif here.*
-
----
 
 ## 🤝 Contributing
 
@@ -107,9 +96,4 @@ You are free to use, modify, and distribute this project with attribution.
 * [Lucide Icons](https://lucide.dev/) for beautiful icons
 * [IntaSend](https://intasend.com/) for secure payments
 
-```
 
----
-
-👉 Do you want me to also include a **live demo setup guide for Firebase Hosting**, so it’s not just on GitHub Pages but also fully working with authentication and database?
-```
